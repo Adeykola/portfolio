@@ -149,9 +149,9 @@ export const ProjectsManager: React.FC = () => {
                     </div>
                   )}
                 </div>
-              ) : project.thumbnail_url ? (
+              ) : project.image_url ? (
                 <img
-                  src={project.thumbnail_url}
+                  src={project.image_url}
                   alt={project.title}
                   className="w-full h-48 object-cover"
                 />
