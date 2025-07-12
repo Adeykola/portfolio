@@ -335,12 +335,6 @@ export const Portfolio: React.FC = () => {
       </div>
 
       {/* Image Gallery Modal */}
-      {console.log('🖼️ Rendering modal with:', { 
-        showGallery, 
-        imageCount: selectedProjectImages.length, 
-        projectTitle: selectedProjectTitle,
-        images: selectedProjectImages
-      })}
       <ImageGalleryModal
         images={selectedProjectImages}
         isOpen={showGallery}
