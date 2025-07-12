@@ -222,16 +222,15 @@ export default function SiteSettingsManager() {
         <div className="divide-y divide-gray-200 dark:divide-gray-700">
           {settings.map((setting) => (
             <SettingRow
-              key={setting.id}
-              setting={setting}
-              isEditing={editingKey === setting.key}
-              onEdit={() => setEditingKey(setting.key)}
-              onSave={(value) => updateSetting(setting.id, setting.key, value)}
-              onSave={(value) => updateSetting(setting.id, value)}
-              onCancel={() => setEditingKey(null)}
-              onDelete={() => deleteSetting(setting.id)}
-              saving={saving}
-            />
+  key={setting.id}
+  setting={setting}
+  isEditing={editingKey === setting.key}
+  onEdit={() => setEditingKey(setting.key)}
+  onSave={(value) => updateSetting(setting.id, value)}
+  onCancel={() => setEditingKey(null)}
+  onDelete={() => deleteSetting(setting.id)}
+  saving={saving}
+/>
           ))}
         </div>
 
