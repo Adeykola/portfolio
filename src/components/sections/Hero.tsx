@@ -42,6 +42,9 @@ export const Hero: React.FC = () => {
     )
   }
 
+  // Construct the image URL from Supabase
+  const heroImageUrl = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/project-images/portfolio%20(1).png`;
+
   return (
     <section id="hero" className="min-h-screen flex items-center justify-center relative overflow-hidden z-0">
       {/* Background Elements */}
@@ -164,7 +167,7 @@ export const Hero: React.FC = () => {
           >
             <div className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96 mx-auto">
               <img
-                src="/portfolio (1).png"
+                src={heroImageUrl}
                 alt="Adekola Afolabi"
                 className="w-full h-full object-contain"
               />
