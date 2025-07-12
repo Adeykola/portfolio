@@ -25,7 +25,7 @@ export const Portfolio: React.FC = () => {
       const data = await db.getProjects()
       console.log('Loaded projects data:', data)
       console.log('Graphics projects with images:', data.filter(p => p.category === 'Graphics' && p.images?.length > 0))
-      
+
       // More detailed debugging for each project
       data.forEach((project, index) => {
         if (project.category === 'Graphics') {
@@ -39,7 +39,7 @@ export const Portfolio: React.FC = () => {
           })
         }
       })
-      
+
       setProjects(data)
     } catch (error) {
       console.error('Error loading projects:', error)
@@ -58,7 +58,7 @@ export const Portfolio: React.FC = () => {
     console.log('Project images:', project.images)
     console.log('Images length:', project.images?.length)
     console.log('Gallery state before:', { showGallery, selectedProjectImages, selectedProjectTitle })
-    
+
     if (project.category === 'Graphics' && project.images && project.images.length > 0) {
       console.log('Opening gallery for project:', project.title)
       console.log('Setting gallery images:', project.images)
@@ -72,7 +72,7 @@ export const Portfolio: React.FC = () => {
       console.log('- Has images?', !!project.images)
       console.log('- Images length > 0?', project.images && project.images.length > 0)
     }
-    
+
     // Debug the state after update (with setTimeout to ensure state is updated)
     setTimeout(() => {
       console.log('Gallery state after update:', { showGallery, selectedProjectImages, selectedProjectTitle })
@@ -174,7 +174,7 @@ export const Portfolio: React.FC = () => {
                 <p className="text-gray-400">No projects available in this category yet.</p>
               </div>
             ) : (
-              filteredProjects.map((project) => (
+              filteredProjects.map((project, index) => (
                 <motion.div
                   key={project.id}
                   variants={itemVariants}
@@ -201,13 +201,13 @@ export const Portfolio: React.FC = () => {
                       src={
                         project.category === 'Graphics' && project.images && project.images.length > 0
                           ? project.images[0].image_url
-                          : project.thumbnail_url || 'https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=800'
+                          : project.image_url || 'https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=800'
                       }
                       alt={project.title}
                       className="w-full h-40 sm:h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    
+
                     {/* Overlay Actions */}
                     <div className="absolute top-2 sm:top-4 right-2 sm:right-4 flex gap-1 sm:gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       {project.live_url && (
@@ -263,7 +263,7 @@ export const Portfolio: React.FC = () => {
                         {project.category}
                       </span>
                     </div>
-                    
+
                     <p className="text-gray-400 mb-4 line-clamp-2">
                       {project.description}
                     </p>
@@ -335,6 +335,7 @@ export const Portfolio: React.FC = () => {
       </div>
 
       {/* Image Gallery Modal */}
+
       <ImageGalleryModal
         images={selectedProjectImages}
         isOpen={showGallery}
