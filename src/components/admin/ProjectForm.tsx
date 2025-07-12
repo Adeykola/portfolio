@@ -16,7 +16,7 @@ const schema = yup.object({
   technologies: yup.string().required('Technologies are required'),
   live_url: yup.string().url('Must be a valid URL').nullable(),
   github_url: yup.string().url('Must be a valid URL').nullable(),
-  thumbnail_url: yup.string().url('Must be a valid URL').nullable(),
+  image_url: yup.string().url('Must be a valid URL').nullable(),
   featured: yup.boolean().default(false),
   order_index: yup.number().min(0).required('Order is required'),
 });
@@ -51,7 +51,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onC
       technologies: project?.technologies?.join(', ') || '',
       live_url: project?.live_url || null,
       github_url: project?.github_url || null,
-      thumbnail_url: project?.thumbnail_url || null,
+      image_url: project?.image_url || null,
       featured: project?.featured || false,
       order_index: project?.order_index || 0,
     },
@@ -91,21 +91,21 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onC
     setUploadingSingle(true);
     try {
       const optimizedImage = await optimizeImage(file);
-      
+
       const timestamp = Date.now();
       const extension = file.name.split('.').pop() || 'jpg';
       const filename = `main-${timestamp}.${extension}`;
-      
+
       const { publicUrl, error } = await db.uploadFile(optimizedImage, 'project-images', filename);
-      
+
       if (error) {
         console.error('Upload error:', error);
         toast.error('Failed to upload image');
         return;
       }
-      
+
       if (publicUrl) {
-        setValue('thumbnail_url', publicUrl);
+        setValue('image_url', publicUrl);
         toast.success('Image uploaded successfully!');
       }
     } catch (error) {
@@ -122,7 +122,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onC
     setProjectImages(projectImages.filter((_, i) => i !== index));
   };
 
-  const thumbnailUrl = watch('thumbnail_url');
+  const imageUrl = watch('image_url');
 
   const handleFormSubmit = async (data: FormData) => {
     setLoading(true);
@@ -132,7 +132,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onC
         technologies: data.technologies.split(',').map(t => t.trim()).filter(Boolean),
         live_url: data.live_url || null,
         github_url: data.github_url || null,
-        thumbnail_url: data.thumbnail_url || null,
+        image_url: data.image_url || null,
       };
 
       await onSubmit(projectData, projectImages);
@@ -260,7 +260,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onC
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Main Project Image (Thumbnail)
               </label>
-              
+
               <div className="mb-3">
                 <div className="flex items-center gap-3">
                   <input
@@ -296,19 +296,19 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onC
                   Or paste image URL:
                 </label>
                 <input
-                  {...register('thumbnail_url')}
+                  {...register('image_url')}
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   placeholder="https://example.com/image.jpg"
                 />
               </div>
 
-              {errors.thumbnail_url && (
-                <p className="mt-1 text-sm text-red-400">{errors.thumbnail_url.message}</p>
+              {errors.image_url && (
+                <p className="mt-1 text-sm text-red-400">{errors.image_url.message}</p>
               )}
-              {thumbnailUrl && (
+              {imageUrl && (
                 <div className="mt-2">
                   <img
-                    src={thumbnailUrl}
+                    src={imageUrl}
                     alt="Preview"
                     className="w-32 h-20 object-cover rounded-lg"
                     onError={(e) => {
@@ -324,7 +324,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onC
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Project Images
                 </label>
-                
+
                 <div className="flex gap-2 mb-4">
                   <input
                     value={newImageUrl}
