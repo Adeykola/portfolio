@@ -19,8 +19,8 @@ serve(async (req) => {
     if (!name || !email || !subject || !message) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields' }),
-        { 
-          status: 400, 
+        {
+          status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       )
@@ -62,21 +62,21 @@ serve(async (req) => {
 
     // Use Resend API for email sending (you'll need to set up Resend)
     const resendApiKey = Deno.env.get('RESEND_API_KEY')
-    
+
     if (!resendApiKey) {
       console.log('RESEND_API_KEY not found, logging email instead:')
       console.log('To:', emailContent.to)
       console.log('Subject:', emailContent.subject)
       console.log('From:', name, '<' + email + '>')
       console.log('Message:', message)
-      
+
       return new Response(
-        JSON.stringify({ 
-          success: true, 
-          message: 'Contact saved successfully (email service not configured)' 
+        JSON.stringify({
+          success: true,
+          message: 'Contact saved successfully (email service not configured)'
         }),
-        { 
-          status: 200, 
+        {
+          status: 200,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       )
@@ -90,7 +90,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Portfolio Contact <noreply@yourdomain.com>', // You'll need to verify this domain with Resend
+        from: 'Portfolio Contact <adekola.martins@gmail.com>', // You'll need to verify this domain with Resend
         to: emailContent.to,
         subject: emailContent.subject,
         html: emailContent.html,
@@ -108,13 +108,13 @@ serve(async (req) => {
     console.log('Email sent successfully:', emailResult.id)
 
     return new Response(
-      JSON.stringify({ 
-        success: true, 
+      JSON.stringify({
+        success: true,
         message: 'Email sent successfully',
         emailId: emailResult.id
       }),
-      { 
-        status: 200, 
+      {
+        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
     )
@@ -122,12 +122,12 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in send-contact-email function:', error)
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         error: 'Failed to send email',
-        details: error.message 
+        details: error.message
       }),
-      { 
-        status: 500, 
+      {
+        status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
     )

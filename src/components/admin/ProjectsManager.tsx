@@ -41,56 +41,32 @@ export const ProjectsManager: React.FC = () => {
   };
 
   const handleFormSubmit = async (projectData: any, projectImages: string[] = []) => {
-    console.log('ProjectsManager - Received projectData:', projectData);
-    console.log('ProjectsManager - Received projectImages:', projectImages);
-    console.log('ProjectsManager - Project category:', projectData.category);
-    
     try {
       let savedProject;
       if (editingProject) {
-        console.log('Updating existing project with ID:', editingProject.id);
         savedProject = await db.updateProject(editingProject.id, projectData);
         toast.success('Project updated successfully');
       } else {
-        console.log('Creating new project');
         savedProject = await db.createProject(projectData);
         toast.success('Project created successfully');
       }
 
-      // Handle project images
       const projectId = savedProject.id;
-      console.log('Saved project ID:', projectId);
       
       if (projectData.category === 'Graphics') {
-        console.log('Processing Graphics project - deleting existing images');
-        // For Graphics projects, manage multiple images
         await db.deleteProjectImages(projectId);
-        console.log('Deleted existing project images');
-        
-        // Add new images
-        console.log('Adding', projectImages.length, 'new images');
         for (let i = 0; i < projectImages.length; i++) {
-          console.log('Adding image', i + 1, ':', projectImages[i]);
           await db.addProjectImage(projectId, projectImages[i], i);
-          console.log('Successfully added image', i + 1);
         }
-        console.log('Finished adding all images');
       } else {
-        console.log('Non-Graphics project - ensuring no project images exist');
-        // For non-Graphics projects, ensure no project images exist
         await db.deleteProjectImages(projectId);
-        console.log('Cleaned up any existing project images');
       }
 
-      // Reload projects to get updated data with images
-      console.log('Reloading projects to refresh data');
       await loadProjects();
-      console.log('Projects reloaded successfully');
       
       setShowForm(false);
       setEditingProject(null);
     } catch (error: any) {
-      console.error('Error in handleFormSubmit:', error);
       toast.error('Failed to save project');
       console.error('Project save error:', error);
     }
@@ -154,7 +130,6 @@ export const ProjectsManager: React.FC = () => {
               transition={{ delay: index * 0.1 }}
               className="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 hover:border-gray-600 transition-colors"
             >
-              {/* Project Images */}
               {project.category === 'Graphics' && project.images && project.images.length > 0 ? (
                 <div className="grid grid-cols-2 gap-1 h-48">
                   {project.images.slice(0, 4).map((image, imgIndex) => (
@@ -174,9 +149,9 @@ export const ProjectsManager: React.FC = () => {
                     </div>
                   )}
                 </div>
-              ) : project.image_url ? (
+              ) : project.thumbnail_url ? (
                 <img
-                  src={project.image_url}
+                  src={project.thumbnail_url}
                   alt={project.title}
                   className="w-full h-48 object-cover"
                 />

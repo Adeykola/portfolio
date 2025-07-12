@@ -11,6 +11,7 @@
       - `status` (text, default: 'new')
       - `created_at` (timestamp)
 
+
   2. Security
     - Enable RLS on `contacts` table
     - Add policy for authenticated users to manage contacts

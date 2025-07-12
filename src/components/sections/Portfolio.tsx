@@ -21,25 +21,7 @@ export const Portfolio: React.FC = () => {
 
   const loadProjects = async () => {
     try {
-      console.log('Loading projects...')
       const data = await db.getProjects()
-      console.log('Loaded projects data:', data)
-      console.log('Graphics projects with images:', data.filter(p => p.category === 'Graphics' && p.images?.length > 0))
-      
-      // More detailed debugging for each project
-      data.forEach((project, index) => {
-        if (project.category === 'Graphics') {
-          console.log(`Graphics Project ${index + 1}:`, {
-            id: project.id,
-            title: project.title,
-            category: project.category,
-            hasImages: !!project.images,
-            imageCount: project.images?.length || 0,
-            images: project.images
-          })
-        }
-      })
-      
       setProjects(data)
     } catch (error) {
       console.error('Error loading projects:', error)
@@ -53,34 +35,14 @@ export const Portfolio: React.FC = () => {
     : projects.filter(project => project.category === activeCategory)
 
   const openGallery = (project: Project) => {
-    console.log('Project clicked:', project)
-    console.log('Project category:', project.category)
-    console.log('Project images:', project.images)
-    console.log('Images length:', project.images?.length)
-    console.log('Gallery state before:', { showGallery, selectedProjectImages, selectedProjectTitle })
-    
     if (project.category === 'Graphics' && project.images && project.images.length > 0) {
-      console.log('Opening gallery for project:', project.title)
-      console.log('Setting gallery images:', project.images)
       setSelectedProjectImages(project.images)
       setSelectedProjectTitle(project.title)
       setShowGallery(true)
-      console.log('Gallery state should be updated')
-    } else {
-      console.log('Gallery not opened. Reasons:')
-      console.log('- Category is Graphics?', project.category === 'Graphics')
-      console.log('- Has images?', !!project.images)
-      console.log('- Images length > 0?', project.images && project.images.length > 0)
     }
-    
-    // Debug the state after update (with setTimeout to ensure state is updated)
-    setTimeout(() => {
-      console.log('Gallery state after update:', { showGallery, selectedProjectImages, selectedProjectTitle })
-    }, 100)
   }
 
   const closeGallery = () => {
-    console.log('Closing gallery')
     setShowGallery(false)
     setSelectedProjectImages([])
     setSelectedProjectTitle('')
@@ -181,7 +143,6 @@ export const Portfolio: React.FC = () => {
                   whileHover={{ y: -10 }}
                   onClick={(e) => {
                     e.preventDefault()
-                    console.log('Card clicked for project:', project.title)
                     openGallery(project)
                   }}
                   className="bg-gray-900 rounded-xl overflow-hidden border border-gray-700 hover:border-cyan-500/50 transition-all duration-300 group cursor-pointer"
@@ -191,17 +152,11 @@ export const Portfolio: React.FC = () => {
                 >
                   {/* Project Image */}
                   <div className="relative overflow-hidden">
-                    {/* Debug overlay for Graphics projects */}
-                    {project.category === 'Graphics' && (
-                      <div className="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded z-10">
-                        G: {project.images?.length || 0}
-                      </div>
-                    )}
                     <img
                       src={
                         project.category === 'Graphics' && project.images && project.images.length > 0
                           ? project.images[0].image_url
-                          : project.image_url || 'https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=800'
+                          : project.thumbnail_url || 'https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=800'
                       }
                       alt={project.title}
                       className="w-full h-40 sm:h-48 object-cover group-hover:scale-110 transition-transform duration-500"
@@ -335,12 +290,6 @@ export const Portfolio: React.FC = () => {
       </div>
 
       {/* Image Gallery Modal */}
-      {console.log('🖼️ Rendering modal with:', { 
-        showGallery, 
-        imageCount: selectedProjectImages.length, 
-        projectTitle: selectedProjectTitle,
-        images: selectedProjectImages
-      })}
       <ImageGalleryModal
         images={selectedProjectImages}
         isOpen={showGallery}
