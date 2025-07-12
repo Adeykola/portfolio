@@ -14,7 +14,7 @@ export const db = {
   // File upload function
   async uploadFile(file: File | Blob, bucketName: string, fileName: string) {
     try {
-      const { data, error } = await supabase.storage
+      const { error } = await supabase.storage
         .from(bucketName)
         .upload(fileName, file);
 
@@ -34,7 +34,6 @@ export const db = {
   // Projects
   async getProjects() {
     try {
-      console.log('Fetching projects with images...');
       const { data, error } = await supabase
         .from('projects')
         .select(`
@@ -48,29 +47,13 @@ export const db = {
         throw error;
       }
       
-      console.log('Raw projects data from Supabase:', data);
-      
-      // Process and validate the data
       const processedData = data?.map(project => {
-        const processedProject = {
+        return {
           ...project,
           images: project.images || []
         };
-        
-        if (project.category === 'Graphics') {
-          console.log(`Graphics project "${project.title}":`, {
-            id: project.id,
-            category: project.category,
-            rawImages: project.images,
-            processedImages: processedProject.images,
-            imageCount: processedProject.images.length
-          });
-        }
-        
-        return processedProject;
       }) || [];
       
-      console.log('Processed projects data:', processedData);
       return processedData;
     } catch (error) {
       console.error('Database error in getProjects:', error);
